@@ -1,4 +1,4 @@
 # Sample values
-resource_group_name = "rg-tf-appservices"
+resource_group_name = "rg-terraform-appservices"
 location            = "southeastasia"
-prefix_environment  = "dev"
+prefix_environment  = "prd"
