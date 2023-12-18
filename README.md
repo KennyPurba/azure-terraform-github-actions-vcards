@@ -1,6 +1,6 @@
 # GitHub Actions Workflows for Terraform
 
-# Trigger Code Changes
+# Trigger Code Changes 2
 
 This is a sample repository that shows how to use GitHub Actions workflows to manage Azure infrastructure with Terraform. 
 
