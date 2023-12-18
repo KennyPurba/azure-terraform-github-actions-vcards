@@ -64,7 +64,7 @@ resource "azurerm_service_plan" "appserviceplan2" {
 }
 
 # Create the web app, pass in the App Service Plan ID
-resource "azurerm_linux_web_app" "webapp" {
+resource "azurerm_linux_web_app" "webapp2" {
   name                = "webapp-demo2-${var.prefix_environment}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
