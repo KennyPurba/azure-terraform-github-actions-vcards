@@ -52,3 +52,22 @@ resource "azurerm_linux_web_app" "webapp" {
   }
 
 }
+
+# Create Storage Account in Resource Group
+resource "azurerm_storage_account" "attachmentstorage" {
+  name                     = "attachmentstorage${lower(var.prefix_environment)}"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  tags = {
+    environment = var.prefix_environment
+  }
+}
+
+resource "azurerm_storage_container" "attachmentcontainer" {
+  name                  = "attachment"
+  storage_account_name  = azurerm_storage_account.attachmentstorage.name
+  container_access_type = "private"
+}
