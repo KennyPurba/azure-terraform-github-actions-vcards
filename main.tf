@@ -8,10 +8,10 @@ terraform {
 
   # Update this block with the location of your terraform state file
   backend "azurerm" {
-    resource_group_name  = "tfstatedemo"
-    storage_account_name = "tfgithubdemo"
-    container_name       = "tfstate"
-    key                  = "terraform.tfstate"
+    resource_group_name  = "tfagitbusinesscard"
+    storage_account_name = "tfagitbusinesscard"
+    container_name       = "agitbusinesscard"
+    key                  = "agitbusinesscard.tfstate"
     use_oidc             = true
   }
 }
@@ -37,64 +37,45 @@ resource "azurerm_service_plan" "appserviceplan" {
 }
 
 # Create the web app, pass in the App Service Plan ID
-resource "azurerm_linux_web_app" "webapp" {
-  name                = "webapp-${var.prefix_environment}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_service_plan.appserviceplan.id
-  https_only          = true
-  site_config {
-    minimum_tls_version = "1.2"
-    application_stack {
-      docker_registry_url = "https://docker.io"
-      docker_image_name   = "nginx:latest"
-    }
-  }
+resource "azurerm_windows_web_app" "app" {
+  name                = "agitbusinesscard"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  service_plan_id     = azurerm_service_plan.ASP.id
 
+  site_config {
+    always_on = true
+  }
 }
 
 
 # Create the Linux App Service Plan
-resource "azurerm_service_plan" "appserviceplan2" {
-  name                = "webapp-demo2-${var.prefix_environment}"
-  location            = azurerm_resource_group.rg.location
+resource "azurerm_service_plan" "ASP" {
+  name                = "ASP-agitbusinesscard"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  os_type             = "Linux"
-  sku_name            = "B2"
-}
-
-# Create the web app, pass in the App Service Plan ID
-resource "azurerm_linux_web_app" "webapp2" {
-  name                = "webapp-demo2-${var.prefix_environment}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_service_plan.appserviceplan2.id
-  https_only          = true
-  site_config {
-    minimum_tls_version = "1.2"
-    application_stack {
-      docker_registry_url = "https://docker.io"
-      docker_image_name   = "nginx:latest"
-    }
-  }
-
+  sku_name            = "B1"
+  os_type             = "Windows"
 }
 
 # Create Storage Account in Resource Group
-resource "azurerm_storage_account" "attachmentstorage" {
-  name                     = "attachmentstorage${lower(var.prefix_environment)}"
-  resource_group_name      = azurerm_resource_group.rg.name
-  location                 = azurerm_resource_group.rg.location
+resource "azurerm_storage_account" "storage_account" {
+  name                     = "agitbusinesscardstorage"
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-
-  tags = {
-    environment = var.prefix_environment
-  }
 }
 
-resource "azurerm_storage_container" "attachmentcontainer" {
-  name                  = "attachment"
-  storage_account_name  = azurerm_storage_account.attachmentstorage.name
+resource "azurerm_storage_table" "table" {
+  name                 = "profile"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  
+}
+
+resource "azurerm_storage_container" "container" {
+  name                 = "media"
+  storage_account_name = azurerm_storage_account.storage_account.name
   container_access_type = "private"
 }
+

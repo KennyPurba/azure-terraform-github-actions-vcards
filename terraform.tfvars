@@ -1,3 +1,2 @@
-resource_group_name = "rg-tf-appservices"
-location            = "southeastasia"
-prefix_environment  = "prd"
+resource_group_name = "agitbusinesscard"
+location = "Southeast Asia"
