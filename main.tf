@@ -43,8 +43,47 @@ resource "azurerm_windows_web_app" "app" {
   resource_group_name = var.resource_group_name
   service_plan_id     = azurerm_service_plan.ASP.id
 
+  auth_settings_v2 {
+    auth_enabled   = true
+    excluded_paths = []
+    unauthenticated_action = "AllowAnonymous"
+    http_route_api_prefix = "/.auth"
+
+    active_directory_v2 {
+      client_id = var.client_id
+      tenant_auth_endpoint = var.tenant_auth_endpoint
+    }
+    login {
+      cookie_expiration_convention = "FixedTime"
+      logout_endpoint = "/.auth/logout"
+      nonce_expiration_time = "00:05:00"
+      token_refresh_extension_time = 72
+      token_store_enabled = true
+      token_store_path = ""
+      token_store_sas_setting_name = ""
+      validate_nonce = true
+    }
+  }
+
   site_config {
     always_on = true
+
+    application_stack {
+      current_stack  = "dotnet"
+      dotnet_version = "6.0"
+    }
+
+    virtual_application {
+      physical_path = "site\\wwwroot"
+      preload       = false
+      virtual_path  = "/"
+    }
+  }
+  sticky_settings {
+    app_setting_names = [
+      "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
+    ]
+    connection_string_names = []
   }
 }
 
@@ -70,12 +109,12 @@ resource "azurerm_storage_account" "storage_account" {
 resource "azurerm_storage_table" "table" {
   name                 = "profile"
   storage_account_name = azurerm_storage_account.storage_account.name
-  
+
 }
 
 resource "azurerm_storage_container" "container" {
-  name                 = "media"
-  storage_account_name = azurerm_storage_account.storage_account.name
+  name                  = "media"
+  storage_account_name  = azurerm_storage_account.storage_account.name
   container_access_type = "private"
 }
 
