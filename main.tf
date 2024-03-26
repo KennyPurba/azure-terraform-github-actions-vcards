@@ -74,7 +74,7 @@ resource "azurerm_windows_web_app" "app" {
 
     application_stack {
       current_stack  = "dotnet"
-      dotnet_version = "6.0"
+      dotnet_version = "v6.0"
     }
 
     virtual_application {
@@ -87,7 +87,6 @@ resource "azurerm_windows_web_app" "app" {
     app_setting_names = [
       "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
     ]
-    connection_string_names = []
   }
 }
 
