@@ -53,7 +53,7 @@ jobs:
       id: tf-plan
       run: |
         export exitcode=0
-        terraform plan -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_auth=${{ secrets.AZURE_TENANT_AUTH }}" -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+        terraform plan -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_auth_endpoint=${{ secrets.AZURE_TENANT_AUTH }}" -detailed-exitcode -no-color -out tfplan || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
