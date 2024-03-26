@@ -8,8 +8,8 @@ terraform {
 
   # Update this block with the location of your terraform state file
   backend "azurerm" {
-    resource_group_name  = "tfagitbusinesscard"
-    storage_account_name = "tfagitbusinesscard"
+    resource_group_name  = "agitbusinesscard"
+    storage_account_name = "agitbusinesscardstorage"
     container_name       = "agitbusinesscard"
     key                  = "agitbusinesscard.tfstate"
     use_oidc             = true
