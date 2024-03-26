@@ -10,7 +10,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "agitbusinesscard"
     storage_account_name = "agitbusinesscardstorage"
-    container_name       = "agitbusinesscard"
+    container_name       = "tfagitbusinesscard"
     key                  = "agitbusinesscard.tfstate"
     use_oidc             = true
   }
@@ -18,10 +18,10 @@ terraform {
 
 provider "azurerm" {
   features {}
-  use_oidc  = true
-  client_id = var.client_id
-  tenant_id = var.tenant_id
-  client_secret = var.client_secret
+  use_oidc        = true
+  client_id       = var.client_id
+  tenant_id       = var.tenant_id
+  client_secret   = var.client_secret
   subscription_id = var.subscription_id
 }
 
@@ -31,13 +31,13 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-# Create the Linux App Service Plan
+# Create the Windows App Service Plan
 resource "azurerm_service_plan" "appserviceplan" {
-  name                = "webapp-asp-${var.prefix_environment}"
+  name                = "ASP-agitbusinesscard-bed6"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  os_type             = "Linux"
-  sku_name            = "B1"
+  os_type             = "Windows"
+  sku_name            = "F1"
 }
 
 # Create the web app, pass in the App Service Plan ID
