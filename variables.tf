@@ -13,3 +13,8 @@ variable "tenant_id" {
   description = "Tenant ID"
   sensitive = true
 }
+
+variable "client_secret" {
+  description = "Application Client certificate secret"
+  sensitive = true
+}
