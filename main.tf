@@ -63,8 +63,6 @@ resource "azurerm_windows_web_app" "app" {
       nonce_expiration_time        = "00:05:00"
       token_refresh_extension_time = 72
       token_store_enabled          = true
-      token_store_path             = ""
-      token_store_sas_setting_name = ""
       validate_nonce               = true
     }
   }
