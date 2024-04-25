@@ -39,6 +39,12 @@ jobs:
       with:
         terraform_wrapper: false
 
+    - name: Azure Login
+      run: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
+    - name: Set Default Subscription
+      run: az account set --subscription $ARM_SUBSCRIPTION_ID
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
@@ -48,11 +54,6 @@ jobs:
     - name: Terraform Format
       run: terraform fmt -check
 
-    - name: Azure Login
-      run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-
-    - name: Set Default Subscription
-      run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     # Generates an execution plan for Terraform
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
@@ -61,11 +62,11 @@ jobs:
       run: |
         export exitcode=0
         terraform plan \
-          -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+          -var="client_id=$ARM_CLIENT_ID" \
           -var="tenant_auth_endpoint=${{ secrets.AZURE_CLIENT_AUTH }}" \
-          -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-          -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-          -var="client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
+          -var="tenant_id=$ARM_TENANT_ID" \
+          -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
+          -var="client_secret=$ARM_CLIENT_SECRET" \
           -detailed-exitcode -no-color -out tfplan || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
@@ -153,4 +154,10 @@ jobs:
 
     # Terraform Apply
     - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
+      run: |
+        terraform apply -auto-approve tfplan \
+        -var="client_id=$ARM_CLIENT_ID" \
+        -var="tenant_auth_endpoint=${{ secrets.AZURE_CLIENT_AUTH }}" \
+        -var="tenant_id=$ARM_TENANT_ID" \
+        -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
+        -var="client_secret=$ARM_CLIENT_SECRET" 

@@ -8,9 +8,9 @@ terraform {
 
   # Update this block with the location of your terraform state file
   backend "azurerm" {
-    resource_group_name  = "agitbusinesscard"
-    storage_account_name = "agitbusinesscardstorage"
-    container_name       = "tfagitbusinesscard"
+    resource_group_name  = "tfagitbusinesscard"
+    storage_account_name = "tfagitbusinesscardstorage"
+    container_name       = "tfagitbusinesscardcontainer"
     key                  = "agitbusinesscard.tfstate"
     use_oidc             = true
   }
@@ -33,11 +33,11 @@ resource "azurerm_resource_group" "rg" {
 
 # Create the Windows App Service Plan
 resource "azurerm_service_plan" "appserviceplan" {
-  name                = "ASP-agitbusinesscard-bed6"
+  name                = "ASP-agitbusinesscard"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Windows"
-  sku_name            = "F1"
+  sku_name            = "B2"
 }
 
 # Create the web app, pass in the App Service Plan ID
@@ -89,7 +89,7 @@ resource "azurerm_windows_web_app" "app" {
 }
 
 
-# Create the Linux App Service Plan
+# Create the Windows App Service Plan
 resource "azurerm_service_plan" "ASP" {
   name                = "ASP-agitbusinesscard"
   location            = var.location
