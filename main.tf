@@ -88,16 +88,6 @@ resource "azurerm_windows_web_app" "app" {
   }
 }
 
-
-# Create the Windows App Service Plan
-resource "azurerm_service_plan" "ASP" {
-  name                = "ASP-agitbusinesscard"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku_name            = "B1"
-  os_type             = "Windows"
-}
-
 # Create Storage Account in Resource Group
 resource "azurerm_storage_account" "storage_account" {
   name                     = "agitbusinesscardstorage"
@@ -115,7 +105,7 @@ resource "azurerm_storage_table" "table" {
 
 resource "azurerm_storage_container" "container" {
   name                  = "media"
-  storage_account_name  = azurerm_storage_account.storage_account.name
+  storage_account_id   = azurerm_storage_account.storage_account.id
   container_access_type = "private"
 }
 
